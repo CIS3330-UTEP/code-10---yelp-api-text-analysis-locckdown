@@ -8,22 +8,19 @@ search_term = "sushi"
 cities = "El Paso, TX", "Horizon City, TX"
 location_term = cities
 analyzer = SentimentIntensityAnalyzer()
-df = pd.DataFrame()
-alias = ()
-review_text = ()
+df = pd.DataFrame(columns=["Alias", "Review"])
+
 search_results = yelp_api.search_query(
         term=search_term, location=location_term,
         sort_by='rating', limit=20)
 
-for item in search_results('businesses'):
-    review_return = yelp_api.reviews_query(id=item.get(alias))
-    for review in review_return('reviews'):
-        alias.append(item.get(alias))
-        review_text.append(review.get('text'))
-data = {"Alias": alias, "Review": review_text}
-df = pd.DataFrame(pd.DataFrame.from_dict(data))
+for item in search_results['businesses']:
+    review_response = yelp_api.reviews_query(id=item['alias'])
+    for review in review_response['reviews']:
+        df = df.append({"Alias": item['alias'], "Review": review['text']}, ignore_index=True)
 
-for review in df('Review'):
+for index, row in df.iterrows():
+    review = row['Review']
     print(review)
     sentiment = analyzer.polarity_scores(review)
     print(sentiment)
