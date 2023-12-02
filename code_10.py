@@ -20,8 +20,10 @@ for item in search_results['businesses']:
         df = df._append({"Alias": item['alias'], "Review": review['text']}, ignore_index=True)
 
 for index, row in df.iterrows():
+    name = row['Name']
     review = row['Review']
-    print(review)
+    print(f"Restaurant: {name}")
+    print(f"Review: {review}")
     sentiment = analyzer.polarity_scores(review)
-    print(sentiment)
+    print(f"Sentiment: {sentiment}")
 
